@@ -2,7 +2,6 @@
 This code is designed for beginners using Understat. It will not express best practice
 in python coding but serves as a basis for those wanting to find their own datasets
 """
-
 from understatapi import UnderstatClient
 
 understat = UnderstatClient()
@@ -24,11 +23,12 @@ df.to_csv(r'league_player_data.csv', index=False)
 
 player_id = league_player_data["id"]
 
-print(player_id)
+print(f'There are {player_id.count()} players in the league for the chosen season')
 
 # Get data for every shot the player has taken in a league match (for chosen season)
 player_ct = 0
 
+#The counter will print increasing values of 1 until it loops through all the players in the league
 with open("player_shot_data.csv", "w") as myfile:
     for i in player_id:
         df2 = understat.player(player=player_id[player_ct]).get_shot_data()
