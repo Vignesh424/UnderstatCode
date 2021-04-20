@@ -1,0 +1,49 @@
+"""
+This code is designed for beginners using Understat. It will not express best practice
+in python coding but serves as a basis for those wanting to find their own datasets
+"""
+
+from understatapi import UnderstatClient
+
+understat = UnderstatClient()
+
+print('Please make sure you type the answer EXACTLY as seen as below: capitals letters/underscores')
+print('EPL, La_Liga, Bundesliga, Serie_A, Ligue_1, RFPL')
+
+League_choice = input("What league would you like to look at? Type one:\n")
+
+print('What season would you like to look at? Type as YYYY (E.g:2019)')
+season_choice = input("Pick a season:\n")
+
+# get data for every player playing in the Premier League in 2020/21
+league_player_data = understat.league(league=League_choice).get_player_data(season=season_choice)
+
+# Print into an excel document all the league player data
+df = league_player_data
+df.to_csv(r'league_player_data.csv', index=False)
+
+player_id = league_player_data["id"]
+
+print(player_id)
+
+# Get data for every shot the player has taken in a league match (for chosen season)
+player_ct = 0
+
+with open("player_shot_data.csv", "w") as myfile:
+    for i in player_id:
+        df2 = understat.player(player=player_id[player_ct]).get_shot_data()
+        if player_ct == 0:
+            df_filtered = df2[df2['season'] == season_choice]
+            df_filtered.to_csv("player_shot_data.csv", mode='a', header=True, index=False)
+            player_ct = player_ct + 1
+            print(player_ct)
+        elif df2.shape[0] == 0:
+            print('DataFrame is empty')
+            player_ct = player_ct + 1
+            print(player_ct)
+        else:
+            df_filtered = df2[df2['season'] == season_choice]
+            player_ct = player_ct + 1
+            #print(df_filtered)
+            print(player_ct)
+            df_filtered.to_csv("player_shot_data.csv", mode='a', header=False, index=False)
