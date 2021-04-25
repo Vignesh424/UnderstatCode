@@ -36,7 +36,6 @@ with open("player_shot_data.csv", "w") as myfile:
         if player_ct == 0:
             df_filtered = df2[df2['season'] == season_choice]
             df3 = df_filtered.loc[df_filtered['h_team'].isin(myset)]
-            #df_filtered2 = df_filtered[df_filtered['h_team'].isin([myset])]
             print(df_filtered)
             df3.to_csv("player_shot_data.csv", mode='a', header=True, index=False)
             player_ct = player_ct + 1
