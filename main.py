@@ -22,19 +22,23 @@ df = league_player_data
 df.to_csv(r'league_player_data.csv', index=False)
 
 player_id = league_player_data["id"]
+teams = league_player_data["team_title"]
+myset = set(teams)
 
 print(f'There are {player_id.count()} players in the league for the chosen season')
 
 # Get data for every shot the player has taken in a league match (for chosen season)
 player_ct = 0
-
 #The counter will print increasing values of 1 until it loops through all the players in the league
 with open("player_shot_data.csv", "w") as myfile:
     for i in player_id:
         df2 = understat.player(player=player_id[player_ct]).get_shot_data()
         if player_ct == 0:
             df_filtered = df2[df2['season'] == season_choice]
-            df_filtered.to_csv("player_shot_data.csv", mode='a', header=True, index=False)
+            df3 = df_filtered.loc[df_filtered['h_team'].isin(myset)]
+            #df_filtered2 = df_filtered[df_filtered['h_team'].isin([myset])]
+            print(df_filtered)
+            df3.to_csv("player_shot_data.csv", mode='a', header=True, index=False)
             player_ct = player_ct + 1
             print(player_ct)
         elif df2.shape[0] == 0:
@@ -43,7 +47,7 @@ with open("player_shot_data.csv", "w") as myfile:
             print(player_ct)
         else:
             df_filtered = df2[df2['season'] == season_choice]
+            df3 = df_filtered.loc[df_filtered['h_team'].isin(myset)]
             player_ct = player_ct + 1
-            #print(df_filtered)
             print(player_ct)
-            df_filtered.to_csv("player_shot_data.csv", mode='a', header=False, index=False)
+            df3.to_csv("player_shot_data.csv", mode='a', header=False, index=False)
